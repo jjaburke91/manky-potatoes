@@ -50,7 +50,7 @@ class IndexPage extends React.Component {
 
         gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SPREADSHEET_ID,
-            range: "Sheet1!B:S"
+            range: "Sheet1!B:T"
         }).then(response => {
             const rows = response.result;
             const allFilms = [];
