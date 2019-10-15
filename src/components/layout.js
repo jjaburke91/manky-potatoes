@@ -8,6 +8,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useStaticQuery, graphql } from "gatsby";
+import Helmet from "react-helmet";
 
 import Header from "./header";
 import "./layout.css";
@@ -26,6 +27,11 @@ const Layout = ({ children }) => {
     return (
         <>
             <Header siteTitle={data.site.siteMetadata.title} />
+
+            <Helmet>
+                <script src="https://apis.google.com/js/api.js" />
+            </Helmet>
+
             <div
                 style={{
                     margin: `0 auto`,
