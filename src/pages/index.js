@@ -22,20 +22,27 @@ class IndexPage extends React.Component {
 
         this.state = {
             films: null,
+            genres: null,
             searchValue: "",
+            selectedGenre: null,
         };
 
         this._requestFilms = this._requestFilms.bind(this);
         this._initGapi = this._initGapi.bind(this);
         this._setSearchValue = this._setSearchValue.bind(this);
+        this._renderGenre = this._renderGenre.bind(this);
     }
 
     componentDidMount() {
         if (USE_DUMMY_DATA) {
+            const allFilms = films.values
+                .slice(2, films.values.length)
+                .map(film => new FilmEntry(film));
+
+            const genres = Object.keys(allFilms[0].genres);
             return this.setState({
-                films: films.values
-                    .slice(2, films.values.length)
-                    .map(film => new FilmEntry(film)),
+                films: allFilms,
+                genres: genres,
             });
         }
 
@@ -73,15 +80,17 @@ class IndexPage extends React.Component {
                 range: "Sheet1!B:T",
             })
             .then(response => {
-                console.log(response);
                 const rows = response.result;
                 const allFilms = [];
                 for (let i = 2; i < rows.values.length; i++) {
-                    allFilms.push(new FilmEntry(rows.values[i]));
+                    const filmEntry = new FilmEntry(rows.values[i]);
+                    allFilms.push(filmEntry);
                 }
 
+                const genres = Object.keys(allFilms[0].genres);
                 this.setState({
                     films: allFilms,
+                    genres: genres,
                 });
             })
             .catch(err => {
@@ -105,11 +114,39 @@ class IndexPage extends React.Component {
         );
     }
 
+    _renderGenres() {
+        if (!this.state.genres) return null;
+
+        return this.state.genres.map(genre => {
+            return this._renderGenre(genre);
+        })
+    }
+
+    _renderGenre(genre) {
+        const genreStyle = {
+            padding: "0 2px",
+            cursor: "pointer",
+            fontWeight: genre === this.state.selectedGenre ? "bold" : "normal"
+        }
+
+        return (
+            <span onClick={() => this.setState({selectedGenre: genre})} style={genreStyle}>
+                {genre}
+            </span>
+        );
+    }
+
     render() {
         let filmsToRender = this.state.films;
         if (filmsToRender && this.state.searchValue) {
             filmsToRender = this.state.films.filter(film =>
                 film.title.toLowerCase().includes(this.state.searchValue.toLowerCase())
+            );
+        }
+
+        if (filmsToRender && this.state.selectedGenre) {
+            filmsToRender = this.state.films.filter(film =>
+                film.genres[this.state.selectedGenre] === true
             );
         }
 
@@ -127,6 +164,7 @@ class IndexPage extends React.Component {
                 {!!filmsToRender && (
                     <div>
                         {this._renderInputForm()}
+                        {this._renderGenres()}
                         <FilmList films={filmsToRender} />
                     </div>
                 )}
