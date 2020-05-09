@@ -26,7 +26,9 @@
     "react-dom": "^16.2"
   },
   "devDependencies": {
+    "csv-parser": "^2.3.2",
     "eslint": "^6.8.0",
-    "eslint-plugin-react": "^7.19.0"
+    "eslint-plugin-react": "^7.19.0",
+    "ndjson": "^1.5.0"
   }
 }

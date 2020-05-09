@@ -1,27 +1,7 @@
-const GENRES = [
-    'DTW',
-    'Documentary',
-    'Romance',
-    'Sci Fi',
-    'Comedy',
-    'Crime',
-    'Drama',
-    'Horror',
-    'Thriller',
-    'Action',
-    'Fantasy',
-    'Animation',
-];
-const REVIEW_RATINGS = [
-    'cancelled',
-    'okay',
-    'good',
-    'very good',
-    'top potatoe',
-];
+import { genres, ratings } from './helpers';
 
 function encodeTitle(title) {
-    return title.replace(" ", "_").toLowerCase();
+    return title.split(" ").join("_").toLowerCase();
 }
 
 function createGenreSchema(genreName) {
@@ -84,20 +64,20 @@ export default {
             name: 'description',
             type: 'string',
         },
-        ...GENRES.map(createGenreSchema),
+        ...genres.map(createGenreSchema),
         {
             title: 'Review Rating',
             name: 'review_rating',
             fieldset: "review",
             type: 'string',
             options: {
-                list: REVIEW_RATINGS,
+                list: ratings,
                 layout: 'dropdown',
             },
         },
         {
             title: 'Review Comments',
-            name: 'review_comments',
+            name: 'review_comment',
             fieldset: "review",
             type: 'string',
         },
